@@ -57,7 +57,7 @@
             <ul class="navbar-nav ms-auto">
                 @if (Auth::user()->role == 'admin')
                 <li class="nav-item">
-                    <a class="nav-link" href="displayUsers.php">Users</a>
+                    <a class="nav-link" href="{{route('usersView')}}">Users</a>
                 </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('categoryView') }}">Categories</a>

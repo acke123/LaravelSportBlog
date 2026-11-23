@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminCheckMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,10 @@ Route::middleware(AdminCheckMiddleware::class)->group(function () {
     Route::get('/editCategory/{category}', [CategoryController::class, 'getCategoryById'])->name('editCategoryView');
     Route::put('/editCategory/{category}', [CategoryController::class, 'editCategory'])->name('editCategory');
     Route::delete('/deleteCategory/{category}', [CategoryController::class, 'deleteCategory'])->name('deleteCategory');
+});
+
+Route::middleware(AdminCheckMiddleware::class)->group(function () {
+    Route::get('/usersView', [UserController::class, 'getAllUsers'])->name('usersView');
 });
 
 
