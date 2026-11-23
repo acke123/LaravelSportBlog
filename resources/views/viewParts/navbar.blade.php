@@ -42,7 +42,7 @@
 </style>
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container">
-        <a class="navbar-brand fw-bold pe-auto" href="sportBlogView.php">
+        <a class="navbar-brand fw-bold pe-auto" href="{{ route('home') }}">
             {{ Auth::user()->name }}
         </a>
 
@@ -60,7 +60,7 @@
                     <a class="nav-link" href="displayUsers.php">Users</a>
                 </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('categoryView') }}">Category</a>
+                        <a class="nav-link" href="{{ route('categoryView') }}">Categories</a>
                     </li>
                 @endif
                 <li class="nav-item">

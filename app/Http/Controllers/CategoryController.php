@@ -12,6 +12,35 @@ class CategoryController extends Controller
     {
         $categories = Cache::remember('categories', 600,
             fn () => CategoryModel::all());
-        return view('categoryView', ['categories' => $categories]);
+        return view('category.categoryView', ['categories' => $categories]);
+    }
+
+    public function createCategory(request $request)
+    {
+        $validated = $request->validate([
+            'category_name' => 'required|unique:categories|max:50'
+        ]);
+        CategoryModel::create($validated);
+        return redirect()->route('categoryView');
+    }
+
+    public function getCategoryById(CategoryModel $category)
+    {
+        return view('category.editCategory', ['category' => $category]);
+    }
+
+    public function editCategory(request $request, CategoryModel $category)
+    {
+        $validated = $request->validate([
+            'category_name' => 'required|unique:categories|max:50'
+        ]);
+        $category->update($validated);
+        return redirect()->route('categoryView');
+    }
+
+    public function deleteCategory(request $request, CategoryModel $category)
+    {
+        $category->delete();
+        return redirect()->route('categoryView');
     }
 }
