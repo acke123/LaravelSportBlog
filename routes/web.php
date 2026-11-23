@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,6 +9,8 @@ Route::get('/', function () {
 })->middleware('auth')->name('home');
 
 Route::view('/about-us', 'aboutUs')->middleware('auth')->name('aboutUs');
+
+Route::get('/categoryView', [CategoryController::class, 'getAllCategory'])->name('categoryView');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

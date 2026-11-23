@@ -60,7 +60,7 @@
                     <a class="nav-link" href="displayUsers.php">Users</a>
                 </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="displayUsers.php">New category</a>
+                        <a class="nav-link" href="{{ route('categoryView') }}">Category</a>
                     </li>
                 @endif
                 <li class="nav-item">
