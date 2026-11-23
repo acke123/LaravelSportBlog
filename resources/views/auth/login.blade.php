@@ -43,5 +43,12 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+        <div class="flex items-center justify-end mt-4">
+            <a href="{{ route('register') }}">
+                <x-secondary-button type="button">
+                    {{ __('Register') }}
+                </x-secondary-button>
+            </a>
+        </div>
     </form>
 </x-guest-layout>
