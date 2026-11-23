@@ -17,8 +17,17 @@
                             @csrf
                             <div class="mb-3">
                                 <label for="category_name" class="form-label">Category name</label>
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 <input type="text" class="form-control" id="category_name" name="category_name"
-                                       maxlength="50" required>
+                                       maxlength="50" value="{{ old('category_name') }}" required>
                             </div>
 
                             <div class="d-flex justify-content-between">
