@@ -24,6 +24,9 @@ Route::middleware(AdminCheckMiddleware::class)->group(function () {
 
 Route::middleware(AdminCheckMiddleware::class)->group(function () {
     Route::get('/usersView', [UserController::class, 'getAllUsers'])->name('usersView');
+    Route::get('/editUser/{user}', [UserController::class, 'getUser'])->name('editUserView');
+    Route::put('/editUser/{user}', [UserController::class, 'editUser'])->name('editUser');
+    Route::delete('deleteUser/{user}', [UserController::class, 'deleteUser'])->name('deleteUser');
 });
 
 

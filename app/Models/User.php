@@ -35,6 +35,11 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    const ADMIN = 'admin';
+    const NORMAL = 'normal';
+    const EDITOR = 'editor';
+    const ROLES = [self::ADMIN, self::NORMAL, self::EDITOR];
+
     /**
      * Get the attributes that should be cast.
      *

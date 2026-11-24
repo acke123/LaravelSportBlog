@@ -15,4 +15,25 @@ class UserController extends Controller
             fn () => User::all());
         return view('users.usersView', ['users' => $users]);
     }
+
+    public function getUser(User $user)
+    {
+        return view('users.editUser', ['user' => $user]);
+    }
+
+    public function editUser(Request $request, User $user)
+    {
+        $validate = $request->validate([
+            'name' => 'required',
+            'role' => 'required|in:admin,editor,normal'
+        ]);
+        $user->update($validate);
+        return redirect()->route('usersView');
+    }
+
+    public function deleteUser(User $user)
+    {
+        $user->delete();
+        return redirect()->route('usersView');
+    }
 }

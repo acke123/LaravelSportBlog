@@ -38,7 +38,7 @@ class CategoryController extends Controller
         return redirect()->route('categoryView');
     }
 
-    public function deleteCategory(request $request, CategoryModel $category)
+    public function deleteCategory(CategoryModel $category)
     {
         $category->delete();
         return redirect()->route('categoryView');

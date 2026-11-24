@@ -25,12 +25,12 @@
                         <td class="text-center"><?= $user->email ?></td>
                         <td class="text-center"><?= $user->role ?></td>
 
-                        <td class="text-center"><a href="{{ route('editCategoryView', ['category' => $user->id]) }}" type="button"
+                        <td class="text-center"><a href="{{ route('editUserView', ['user' => $user]) }}" type="button"
                                                    class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
-                            <form action="{{ route('deleteCategory', $user) }}" method="POST" class="d-inline"
-                                  onsubmit="return confirm('Are you sure you want to delete this category?');">
+                            <form action="{{ route('deleteUser', $user) }}" method="POST" class="d-inline"
+                                  onsubmit="return confirm('Are you sure you want to delete this user?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">

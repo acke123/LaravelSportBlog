@@ -41,7 +41,7 @@
                     <div class="card-body">
                         <h3 class="h5 card-title">Editor</h3>
                         <p class="card-text mb-0">
-                            Can create posts and edit and delete posts. Can edit only their own profile.
+                            Can create posts, edit and delete posts. Can edit only their own profile.
                         </p>
                     </div>
                 </div>
