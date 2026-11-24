@@ -29,6 +29,7 @@
                                                    class="btn btn-primary">
                                 <i class="bi bi-pencil-square"></i> Edit
                             </a>
+                            @if(Auth::user()->id != $user->id)
                             <form action="{{ route('deleteUser', $user) }}" method="POST" class="d-inline"
                                   onsubmit="return confirm('Are you sure you want to delete this user?');">
                                 @csrf
@@ -36,7 +37,9 @@
                                 <button type="submit" class="btn btn-danger">
                                     <i class="bi bi-trash"></i> Delete
                                 </button>
-                            </form></td></tr>
+                            </form>
+                            @endif
+                        </td></tr>
                 @endforeach
                 </tbody>
             </table>
