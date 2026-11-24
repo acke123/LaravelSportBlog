@@ -1,16 +1,20 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminCheckMiddleware;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('auth')->name('home');
 
 Route::view('/about-us', 'aboutUs')->middleware('auth')->name('aboutUs');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/', [PostController::class, 'index'])->name('home');
+    Route::view('/createPost', 'posts.createPostView')->name('createPostView');
+    Route::post('/createPost', [PostController::class, 'createPost'])->name('createPost');
+});
 
 
 Route::middleware(AdminCheckMiddleware::class)->group(function () {
