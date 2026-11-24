@@ -2,7 +2,7 @@
 @extends('layout')
 
 @section('title')
-    New category
+    Edit user
 @endsection
 
 @section('content')

@@ -4,8 +4,6 @@
     Post detail
 @endsection
 
-
-
 @section('content')
     <main class="container my-5 flex-grow-1">
         <div class="row justify-content-center">
