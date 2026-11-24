@@ -14,6 +14,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('home');
     Route::view('/createPost', 'posts.createPostView')->name('createPostView');
     Route::post('/createPost', [PostController::class, 'createPost'])->name('createPost');
+    Route::get('/displayPost/{post}', [PostController::class, 'displayPost'])->name('displayPost');
+    Route::get('/editPost/{post}', [PostController::class, 'getEditPost'])->name('displayEditPost');
+    Route::put('/editPost/{post}', [PostController::class, 'updatePost'])->name('updatePost');
+    Route::delete('deletePost/{post}', [PostController::class, 'deletePost'])->name('deletePost');
 });
 
 

@@ -17,6 +17,15 @@
                         <form action="{{ route('createPost') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul class="mb-0">
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
                                 <label for="title" class="form-label">Title</label>
                                 <input type="text" class="form-control" id="title" name="title"
                                        maxlength="50" value="{{ old('title') }}" required>

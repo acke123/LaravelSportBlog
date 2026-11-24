@@ -44,7 +44,7 @@
             <div class="col">
                 <div class="card post-card h-100">
                     <div class="card-header">
-                        <a href="#"
+                        <a href="{{ route('displayPost', ['post' => $post->id]) }}"
                            class="text-decoration-none text-dark stretched-link">
                             {{$post->title}}
                         </a>
