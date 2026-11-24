@@ -7,7 +7,6 @@ use App\Models\CategoryModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
 use App\Traits\ImageUploadTrait;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class PostController extends Controller
