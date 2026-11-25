@@ -10,13 +10,13 @@
             <a href="{{route('createPostView')}}" class="btn btn-info">Create new post <i class="bi bi-plus-lg"></i></a>
         </div>
 
-        <form action="" method="GET" class="row g-3 align-items-end mb-4">
+        <form action="{{route('getSearchData')}}" method="GET" class="row g-3 align-items-end mb-4">
             <div class="col-12 col-md-3">
                 <label for="category_id" class="form-label">Search by category</label>
                 <select class="form-select" id="category_id" name="category_id">
-                    <option value="" selected>No category</option>
+                    <option value="" {{ (!isset($categoryId) || $categoryId == 0) ? "selected" : ""}}>No category</option>
                     @foreach (\Illuminate\Support\Facades\Cache::get('categories') as $category)
-                        <option value="{{$category->id}}"> {{$category->category_name}}
+                        <option value="{{$category->id}}" {{ isset($categoryId) && $categoryId == $category->id ? "selected" : ""}}> {{$category->category_name}}
                         </option>
                     @endforeach
                 </select>
@@ -25,13 +25,13 @@
             <div class="col-12 col-md-3">
                 <label for="title" class="form-label">Search by title</label>
                 <input type="text" class="form-control" id="title" name="title" maxlength="50"
-                       placeholder="Search by title">
+                       placeholder="Search by title" value="{{isset($request->title) ? $request->title : ""}}">
             </div>
 
             <div class="col-12 col-md-3">
                 <label for="tag" class="form-label">Search by a tag</label>
                 <input type="text" class="form-control" id="tag" name="tag" maxlength="50"
-                       placeholder="Search by a tag">
+                       placeholder="Search by a tag" value="{{ isset($request->tag) ? $request->tag : "" }}">
             </div>
 
             <div class="col-12 col-md-auto">

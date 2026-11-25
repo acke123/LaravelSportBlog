@@ -18,6 +18,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/editPost/{post}', [PostController::class, 'getEditPost'])->name('displayEditPost');
     Route::put('/editPost/{post}', [PostController::class, 'updatePost'])->name('updatePost');
     Route::delete('deletePost/{post}', [PostController::class, 'deletePost'])->name('deletePost');
+
+    Route::get('/getSearchData', [PostController::class, 'getSearchData'])->name('getSearchData');
 });
 
 
