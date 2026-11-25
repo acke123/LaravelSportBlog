@@ -13,4 +13,9 @@ class PostModel extends Model
     {
         return $this->hasMany(TagModel::class,'post_id','id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(LikeModel::class,'post_id','id');
+    }
 }

@@ -67,14 +67,17 @@
                     </div>
 
                     <div class="card-footer bg-white d-flex align-items-center gap-2">
-                        <form action="" method="post" class="m-0">
-                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                        <form action="{{ route('toggleLike', ['post' => $post->id]) }}" method="POST" class="m-0">
+                            @csrf
                             <button type="submit" class="btn btn-link text-danger p-0 position-relative z-2">
-                                <i class="bi bi-heart-fill"></i>
-                                <i class="bi bi-heart"></i>
+                                @if(in_array($post->id, $likedPosts))
+                                    <i class="bi bi-heart-fill"></i>
+                                @else
+                                    <i class="bi bi-heart"></i>
+                                @endif
                             </button>
                         </form>
-                        <span>{{ $post->postLikes}}</span>
+                        <span>{{ $post->likes_count}}</span>
                     </div>
                 </div>
             </div>

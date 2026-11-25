@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\CategoryModel;
+use App\Models\LikeModel;
 use App\Models\PostModel;
 use App\Models\User;
 use App\Observers\CategoryObserver;
+use App\Observers\LikeObserver;
 use App\Observers\PostObserver;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
@@ -28,5 +30,6 @@ class AppServiceProvider extends ServiceProvider
         CategoryModel::observe(CategoryObserver::class);
         User::observe(UserObserver::class);
         PostModel::observe(PostObserver::class);
+        LikeModel::observe(LikeObserver::class);
     }
 }

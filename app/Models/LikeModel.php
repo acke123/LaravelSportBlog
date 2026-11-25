@@ -8,4 +8,14 @@ class LikeModel extends Model
 {
     protected $table = 'likes';
     protected $fillable = ['user_id', 'post_id'];
+
+    public function post()
+    {
+        return $this->belongsTo(PostModel::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

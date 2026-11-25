@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\SavePostRequest;
 use App\Models\CategoryModel;
+use App\Models\LikeModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
 use App\Traits\ImageUploadTrait;
@@ -20,9 +21,10 @@ class PostController extends Controller
     public function index()
     {
         $posts = Cache::remember('posts', 600,
-            fn() => PostModel::all());
+            fn() => PostModel::withCount('likes')->get());
         Cache::remember('categories', 600, fn() => CategoryModel::all());
-        return view('welcome', ['posts' => $posts]);
+        $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
+        return view('welcome', ['posts' => $posts, 'likedPosts' => $likedPosts]);
     }
 
     public function getSearchData(Request $request)
@@ -31,7 +33,7 @@ class PostController extends Controller
             return redirect()->route('home');
         }
 
-        $posts = PostModel::query()->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
+        $posts = PostModel::query()->withCount('likes')->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
         ->select('posts.*');
 
         $categoryId = 0;
@@ -48,7 +50,9 @@ class PostController extends Controller
             $posts->where('tags.tag_name', 'like', "%$request->tag%");
         }
         $posts = $posts->distinct()->get();
-        return view('welcome', ['posts' => $posts, 'request' => $request, 'categoryId' => $categoryId]);
+
+        $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
+        return view('welcome', ['posts' => $posts, 'request' => $request, 'categoryId' => $categoryId, 'likedPosts' => $likedPosts]);
     }
 
     public function createPost(SavePostRequest $request)
@@ -109,6 +113,20 @@ class PostController extends Controller
         Storage::disk('public')->delete('post_images/' . $post->post_image);
         TagModel::where('post_id', $post->id)->delete();
         $post->delete();
+        return redirect()->route('home');
+    }
+
+    public function toggleLike(Request $request, PostModel $post)
+    {
+        $isLiked = LikeModel::where('user_id', auth()->user()->id)->where('post_id', $post->id)->first();
+        if ($isLiked) {
+            $isLiked->delete();
+        } else {
+            LikeModel::create([
+                'user_id' => auth()->user()->id,
+                'post_id' => $post->id
+            ]);
+        }
         return redirect()->route('home');
     }
 }

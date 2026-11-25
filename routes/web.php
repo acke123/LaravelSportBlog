@@ -20,6 +20,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('deletePost/{post}', [PostController::class, 'deletePost'])->name('deletePost');
 
     Route::get('/getSearchData', [PostController::class, 'getSearchData'])->name('getSearchData');
+    Route::post('/toggleLike{post}', [PostController::class, 'toggleLike'])->name('toggleLike');
 });
 
 
