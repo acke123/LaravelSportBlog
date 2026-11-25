@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\createCommentRequest;
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\SavePostRequest;
 use App\Models\CategoryModel;
 use App\Models\CommentModel;
 use App\Models\LikeModel;
 use App\Models\PostModel;
-use App\Models\TagModel;
 use App\Repository\PostRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
@@ -103,7 +101,7 @@ class PostController extends Controller
         return redirect()->route('home');
     }
 
-    public function toggleLike(Request $request, PostModel $post)
+    public function toggleLike(PostModel $post)
     {
         $this->postRepository->toggleLike($post);
         return redirect()->back();

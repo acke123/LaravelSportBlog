@@ -6,7 +6,6 @@ use App\Http\Requests\CreateCommentRequest;
 use App\Models\CommentModel;
 use App\Models\PostModel;
 use App\Repository\CommentRepository;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
