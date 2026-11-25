@@ -1,4 +1,4 @@
-@php use Illuminate\Support\Facades\Auth; @endphp
+@php use App\Models\User;use Illuminate\Support\Facades\Auth; @endphp
 <style>
     body {
         background-color: #f4f6fb;
@@ -55,10 +55,10 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav ms-auto">
-                @if (Auth::user()->role == 'admin')
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('usersView')}}">Users</a>
-                </li>
+                @if (Auth::user()->role == User::ADMIN)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{route('usersView')}}">Users</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('categoryView') }}">Categories</a>
                     </li>
@@ -69,12 +69,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('aboutUs') }}">About us</a>
                 </li>
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="nav-link btn btn-link">Logout</button>
-                        </form>
-                    </li>
+                <li class="nav-item">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="nav-link btn btn-link">Logout</button>
+                    </form>
+                </li>
             </ul>
         </div>
     </div>

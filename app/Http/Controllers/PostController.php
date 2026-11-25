@@ -108,7 +108,6 @@ class PostController extends Controller
                 'tag_name' => $tag
             ]);
         }
-
         return redirect()->route('home');
     }
 

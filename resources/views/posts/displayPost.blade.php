@@ -1,3 +1,4 @@
+@php use App\Models\User; @endphp
 @extends('layout')
 
 @section('title')
@@ -23,7 +24,7 @@
                         <p style="white-space: pre-line;">{{$post->tags ? '' : "Tags: " . $post->tags }}</p>
                     </div>
 
-                    @if (Auth::user()->role != 'normal' || Auth::id() == $post->user_id)
+                    @if (Auth::user()->role != User::NORMAL || Auth::id() == $post->user_id)
                         <div class="card-footer bg-white d-flex gap-2">
                             <a href="{{ route('displayEditPost', ['post' => $post]) }}"
                                class="btn btn-warning">
@@ -69,12 +70,14 @@
                                         <small class="text-muted ms-2">{{ $comment->updated_at }}</small>
                                     </div>
 
-                                    @if(auth()->id() == $comment->user_id || auth()->user()->role != 'normal')
-                                        <form action="{{route('deleteComment', ['comment' => $comment->id])}}" method="POST"
+                                    @if(auth()->id() == $comment->user_id || auth()->user()->role != User::NORMAL)
+                                        <form action="{{route('deleteComment', ['comment' => $comment->id])}}"
+                                              method="POST"
                                               class="m-0" onsubmit="return confirm('Are you sure?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-link text-danger p-0" title="Delete comment">
+                                            <button type="submit" class="btn btn-link text-danger p-0"
+                                                    title="Delete comment">
                                                 <i class="bi bi-x-lg"></i>
                                             </button>
                                         </form>
