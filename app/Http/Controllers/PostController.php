@@ -10,6 +10,7 @@ use App\Models\CommentModel;
 use App\Models\LikeModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
+use App\Repository\PostRepository;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -20,13 +21,20 @@ class PostController extends Controller
 {
     use ImageUploadTrait;
 
+    private $postRepository;
+
+    public function __construct()
+    {
+        $this->postRepository = new PostRepository();
+    }
+
     public function index()
     {
         Cache::forget('posts');
         $posts = Cache::remember('posts', 600,
             fn() => PostModel::GetAllPosts()->get());
         Cache::remember('categories', 600, fn() => CategoryModel::all());
-        $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
+        $likedPosts = LikeModel::GetLikedPosts()->pluck('post_id')->all();
         return view('welcome', ['posts' => $posts, 'likedPosts' => $likedPosts]);
     }
 
@@ -36,26 +44,11 @@ class PostController extends Controller
             return redirect()->route('home');
         }
 
-        $posts = PostModel::GetAllPosts()
-            ->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
-            ->select('posts.*');
+        $postData = $this->postRepository->getSearchQuery($request);
+        $posts = $postData['posts'];
+        $categoryId = $postData['categoryId'];
 
-        $categoryId = 0;
-        if (!is_null($request->category_id)) {
-            $posts->where('posts.category_id', $request->category_id);
-            $categoryId = (int)$request->category_id;
-        }
-
-        if (!is_null($request->title)) {
-            $posts->where('posts.title', 'like', "%$request->title%");
-        }
-
-        if (!is_null($request->tag)) {
-            $posts->where('tags.tag_name', 'like', "%$request->tag%");
-        }
-        $posts = $posts->distinct()->get();
-
-        $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
+        $likedPosts = LikeModel::GetLikedPosts()->pluck('post_id')->all();
         return view('welcome', ['posts' => $posts, 'request' => $request, 'categoryId' => $categoryId, 'likedPosts' => $likedPosts]);
     }
 
@@ -69,12 +62,8 @@ class PostController extends Controller
         $tags = str_replace(' ', '', (string)$request->tags);
         $tags = array_unique(array_filter(explode(',', $tags)));
 
-        foreach ($tags as $tag) {
-            TagModel::create([
-                'post_id' => $post->id,
-                'tag_name' => $tag
-            ]);
-        }
+        $this->postRepository->createPost($tags, $post);
+
         return redirect()->route('home');
     }
 
@@ -101,16 +90,8 @@ class PostController extends Controller
         }
         $post->update($data);
 
-        TagModel::where('post_id', $post->id)->delete();
-        $tags = str_replace(' ', '', (string)$request->tags);
-        $tags = array_unique(array_filter(explode(',', $tags)));
+        $this->postRepository->updatePost($post, $request);
 
-        foreach ($tags as $tag) {
-            TagModel::create([
-                'post_id' => $post->id,
-                'tag_name' => $tag
-            ]);
-        }
         return redirect()->route('home');
     }
 
@@ -118,22 +99,13 @@ class PostController extends Controller
     {
         Gate::authorize('editPost', $post);
         Storage::disk('public')->delete('post_images/' . $post->post_image);
-        TagModel::where('post_id', $post->id)->delete();
-        $post->delete();
+        $this->postRepository->deletePost($post);
         return redirect()->route('home');
     }
 
     public function toggleLike(Request $request, PostModel $post)
     {
-        $isLiked = LikeModel::where('user_id', auth()->user()->id)->where('post_id', $post->id)->first();
-        if ($isLiked) {
-            $isLiked->delete();
-        } else {
-            LikeModel::create([
-                'user_id' => auth()->user()->id,
-                'post_id' => $post->id
-            ]);
-        }
+        $this->postRepository->toggleLike($post);
         return redirect()->back();
     }
 }

@@ -5,19 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCommentRequest;
 use App\Models\CommentModel;
 use App\Models\PostModel;
+use App\Repository\CommentRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
+    private $commentRepository;
+    public function __construct()
+    {
+        $this->commentRepository = new CommentRepository();
+    }
+
     public function createComment(createCommentRequest $request, PostModel $post)
     {
         $data = $request->validated();
-        CommentModel::create([
-            'post_id' => $post->id,
-            'user_id' => auth()->id(),
-            'comment' => $data['comment']
-        ]);
+        $this->commentRepository->createComment($post, $data);
         return redirect()->back();
     }
 
