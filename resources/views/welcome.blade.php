@@ -78,6 +78,7 @@
                             </button>
                         </form>
                         <span>{{ $post->likes_count}}</span>
+                        <span><i class="bi bi-chat-dots"></i> {{ $post->comments_count}}</span>
                     </div>
                 </div>
             </div>

@@ -21,6 +21,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/getSearchData', [PostController::class, 'getSearchData'])->name('getSearchData');
     Route::post('/toggleLike{post}', [PostController::class, 'toggleLike'])->name('toggleLike');
+
+    Route::post('/postComment{post}', [PostController::class, 'createComment'])->name('createComment');
+    Route::delete('deleteComment/{comment}', [PostController::class, 'deleteComment'])->name('deleteComment');
 });
 
 

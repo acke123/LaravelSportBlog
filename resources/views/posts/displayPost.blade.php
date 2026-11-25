@@ -41,6 +41,50 @@
                     @endif
                 </div>
                 <a href="{{route('home')}}" class="btn btn-outline-secondary mt-3">Back</a>
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Leave a comment</h5>
+                        <form action="{{route('createComment', ['post' => $post])}}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                <textarea class="form-control" name="comment" rows="3" maxlength="1000"
+                          placeholder="Write a comment..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Post comment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Comments</h5>
+                        @foreach($comments as $comment)
+                            <div class="border-bottom pb-2 mb-2">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{{ $comment->user->name }}:</strong>
+                                        <small class="text-muted ms-2">{{ $comment->updated_at }}</small>
+                                    </div>
+
+                                    @if(auth()->id() == $comment->user_id || auth()->user()->role != 'normal')
+                                        <form action="{{route('deleteComment', ['comment' => $comment->id])}}" method="POST"
+                                              class="m-0" onsubmit="return confirm('Are you sure?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link text-danger p-0" title="Delete comment">
+                                                <i class="bi bi-x-lg"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                                <p class="mb-0">{{ $comment->comment }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </main>

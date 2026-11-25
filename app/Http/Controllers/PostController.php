@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\createCommentRequest;
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\SavePostRequest;
 use App\Models\CategoryModel;
+use App\Models\CommentModel;
 use App\Models\LikeModel;
 use App\Models\PostModel;
 use App\Models\TagModel;
@@ -20,8 +22,9 @@ class PostController extends Controller
 
     public function index()
     {
+        Cache::forget('posts');
         $posts = Cache::remember('posts', 600,
-            fn() => PostModel::withCount('likes')->get());
+            fn() => PostModel::withCount('likes')->withCount('comments')->get());
         Cache::remember('categories', 600, fn() => CategoryModel::all());
         $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
         return view('welcome', ['posts' => $posts, 'likedPosts' => $likedPosts]);
@@ -33,8 +36,9 @@ class PostController extends Controller
             return redirect()->route('home');
         }
 
-        $posts = PostModel::query()->withCount('likes')->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
-        ->select('posts.*');
+        $posts = PostModel::query()->withCount('likes')->withCount('comments')
+            ->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
+            ->select('posts.*');
 
         $categoryId = 0;
         if (!is_null($request->category_id)) {
@@ -76,7 +80,8 @@ class PostController extends Controller
 
     public function displayPost(PostModel $post)
     {
-        return view('posts.displayPost', ['post' => $post]);
+        $comments = CommentModel::where('post_id', $post->id)->get();
+        return view('posts.displayPost', ['post' => $post, 'comments' => $comments]);
     }
 
     public function getEditPost(PostModel $post)
@@ -127,6 +132,24 @@ class PostController extends Controller
                 'post_id' => $post->id
             ]);
         }
-        return redirect()->route('home');
+        return redirect()->back();
+    }
+
+    public function createComment(createCommentRequest $request, PostModel $post)
+    {
+        $data = $request->validated();
+
+        CommentModel::create([
+            'post_id' => $post->id,
+            'user_id' => auth()->id(),
+            'comment' => $data['comment']
+        ]);
+        return redirect()->back();
+    }
+
+    public function deleteComment(request $request, CommentModel $comment)
+    {
+        $comment->delete();
+        return redirect()->back();
     }
 }
