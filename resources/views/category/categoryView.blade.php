@@ -8,6 +8,11 @@
 
 @section('content')
     <main class="container my-5 flex-grow-1">
+        @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         <div class="mb-3">
             <a href="{{ route('createCategoryView') }}" class="btn btn-info">Create Category<i class="bi bi-plus-lg"></i></a>
         </div>

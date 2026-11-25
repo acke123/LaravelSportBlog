@@ -38,7 +38,7 @@ class PostRepository
         if (!is_null($request->tag)) {
             $posts->where('tags.tag_name', 'like', "%$request->tag%");
         }
-        $posts->distinct()->get();
+        $posts = $posts->distinct()->get();
 
         return [
             'posts' => $posts,

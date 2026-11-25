@@ -1,3 +1,4 @@
+@php use App\Models\CategoryModel; @endphp
 @extends('layout')
 
 @section('title')
@@ -14,9 +15,11 @@
             <div class="col-12 col-md-3">
                 <label for="category_id" class="form-label">Search by category</label>
                 <select class="form-select" id="category_id" name="category_id">
-                    <option value="" {{ (!isset($categoryId) || $categoryId == 0) ? "selected" : ""}}>No category</option>
-                    @foreach (\Illuminate\Support\Facades\Cache::get('categories') as $category)
-                        <option value="{{$category->id}}" {{ isset($categoryId) && $categoryId == $category->id ? "selected" : ""}}> {{$category->category_name}}
+                    <option value="" {{ (!isset($categoryId) || $categoryId == 0) ? "selected" : ""}}>No category
+                    </option>
+                    @foreach (CategoryModel::all() as $category)
+                        <option
+                            value="{{$category->id}}" {{ isset($categoryId) && $categoryId == $category->id ? "selected" : ""}}> {{$category->category_name}}
                         </option>
                     @endforeach
                 </select>

@@ -46,7 +46,11 @@ class CategoryController extends Controller
     public function deleteCategory(CategoryModel $category)
     {
         Gate::authorize('updateCategory', CategoryModel::class);
-        $category->delete();
-        return redirect()->route('categoryView');
+        if ($category->posts()->exists()) {
+            return redirect()->back()->with('error', 'Category cannot be deleted because it has posts.');
+        } else {
+            $category->delete();
+            return redirect()->route('categoryView');
+        }
     }
 }

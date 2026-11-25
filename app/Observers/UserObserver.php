@@ -29,6 +29,7 @@ class UserObserver
     public function deleted(User $user): void
     {
         Cache::forget('users');
+        Cache::forget('posts');
     }
 
     /**

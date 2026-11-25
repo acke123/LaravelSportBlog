@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EditPostRequest;
 use App\Http\Requests\SavePostRequest;
-use App\Models\CategoryModel;
 use App\Models\CommentModel;
 use App\Models\LikeModel;
 use App\Models\PostModel;
@@ -28,10 +27,8 @@ class PostController extends Controller
 
     public function index()
     {
-        Cache::forget('posts');
         $posts = Cache::remember('posts', 600,
             fn() => PostModel::GetAllPosts()->get());
-        Cache::remember('categories', 600, fn() => CategoryModel::all());
         $likedPosts = LikeModel::GetLikedPosts()->pluck('post_id')->all();
         return view('welcome', ['posts' => $posts, 'likedPosts' => $likedPosts]);
     }
