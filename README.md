@@ -102,8 +102,9 @@ Observers are registered in `AppServiceProvider` and delete the related cache ke
 |--------------------|-----------------|--------------|
 | `PostObserver`     | `PostModel`     | `posts`      |
 | `LikeObserver`     | `LikeModel`     | `posts`      |
+| `CommentObserver`  | `CommentModel`  | `posts`      |
 | `CategoryObserver` | `CategoryModel` | `categories` |
-| `UserObserver`     | `User`          | `users`      |
+| `UserObserver`     | `User`          | `users`, `posts` |
 
 ### Validation (Form Requests)
 - `SavePostRequest`: title (max 50), description (max 1000), existing category, required image (jpeg, png, jpg or gif, max 5 MB)
@@ -215,7 +216,7 @@ app/
 │   ├── Middleware/       AdminCheckMiddleware
 │   └── Requests/         SavePostRequest, EditPostRequest, CreateCommentRequest, ProfileUpdateRequest
 ├── Models/               User, PostModel, CategoryModel, TagModel, LikeModel, CommentModel
-├── Observers/            PostObserver, LikeObserver, CategoryObserver, UserObserver
+├── Observers/            PostObserver, LikeObserver, CommentObserver, CategoryObserver, UserObserver
 ├── Policies/             PostModelPolicy, CommentModelPolicy, CategoryModelPolicy, UserPolicy
 ├── Repository/           PostRepository, CommentRepository
 ├── Traits/               ImageUploadTrait
