@@ -23,4 +23,9 @@ class PostModel extends Model
     {
         return $this->hasMany(CommentModel::class,'post_id','id');
     }
+
+    public function scopeGetAllPosts($query)
+    {
+        return $query->withCount('likes')->withCount('comments');
+    }
 }

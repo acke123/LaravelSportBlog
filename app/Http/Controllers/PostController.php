@@ -24,7 +24,7 @@ class PostController extends Controller
     {
         Cache::forget('posts');
         $posts = Cache::remember('posts', 600,
-            fn() => PostModel::withCount('likes')->withCount('comments')->get());
+            fn() => PostModel::GetAllPosts()->get());
         Cache::remember('categories', 600, fn() => CategoryModel::all());
         $likedPosts = LikeModel::where('user_id', auth()->user()->id)->pluck('post_id')->all();
         return view('welcome', ['posts' => $posts, 'likedPosts' => $likedPosts]);
@@ -36,7 +36,7 @@ class PostController extends Controller
             return redirect()->route('home');
         }
 
-        $posts = PostModel::query()->withCount('likes')->withCount('comments')
+        $posts = PostModel::GetAllPosts()
             ->leftJoin('tags', 'posts.id', '=', 'tags.post_id')
             ->select('posts.*');
 
