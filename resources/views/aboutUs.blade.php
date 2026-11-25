@@ -296,8 +296,9 @@
                                 <tbody>
                                 <tr><td><code>PostObserver</code></td><td>PostModel</td><td><code>posts</code></td></tr>
                                 <tr><td><code>LikeObserver</code></td><td>LikeModel</td><td><code>posts</code> (like counts change)</td></tr>
+                                <tr><td><code>CommentObserver</code></td><td>CommentModel</td><td><code>posts</code> (comment counts change)</td></tr>
                                 <tr><td><code>CategoryObserver</code></td><td>CategoryModel</td><td><code>categories</code></td></tr>
-                                <tr><td><code>UserObserver</code></td><td>User</td><td><code>users</code></td></tr>
+                                <tr><td><code>UserObserver</code></td><td>User</td><td><code>users</code>, <code>posts</code> (on delete)</td></tr>
                                 </tbody>
                             </table>
                         </div>
