@@ -18,7 +18,7 @@
                             {{ $post->category_name }} ·
                             {{ $post->first_name . ' ' . $post->last_name }}
                         </p>
-                        <p style="white-space: pre-line;">{{ $post->description }}</p>
+                        <div style="white-space: pre-line;">{!! $post->description !!}</div>
 
                         <p style="white-space: pre-line;">{{$post->tags ? '' : "Tags: " . $post->tags }}</p>
                     </div>

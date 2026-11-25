@@ -14,5 +14,7 @@
 @yield('content')
 
 @include('viewParts/footer')
+
+@stack('scripts')
 </body>
 </html>

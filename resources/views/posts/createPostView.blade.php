@@ -44,7 +44,7 @@
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" id="description" name="description"
-                                          rows="6" required>{{ old('description') }}</textarea>
+                                          rows="6">{{ old('description') }}</textarea>
                             </div>
 
                             <div class="mb-3">
@@ -73,3 +73,13 @@
         </div>
     </main>
 @endsection
+@push('scripts')
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#description'), {
+                toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo']
+            })
+            .catch(error => console.error(error));
+    </script>
+@endpush

@@ -57,7 +57,7 @@
                          loading="lazy">
                     <div class="card-body">
                         <p class="card-text">
-                            {{ $post->description}}
+                            {{ Str::limit(html_entity_decode(strip_tags($post->description)), 120) }}
                         </p>
                     </div>
                     <div class="card-body">
