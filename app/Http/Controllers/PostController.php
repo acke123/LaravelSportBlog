@@ -13,6 +13,7 @@ use App\Models\TagModel;
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
@@ -85,12 +86,14 @@ class PostController extends Controller
 
     public function getEditPost(PostModel $post)
     {
+        Gate::authorize('editPost', $post);
         $tags = implode(',', $post->tags->pluck('tag_name')->toArray());
         return view('posts.editPost', ['post' => $post, 'tags' => $tags]);
     }
 
     public function updatePost(PostModel $post, EditPostRequest $request)
     {
+        Gate::authorize('editPost', $post);
         $data = $request->validated();
         if ($request->hasFile('post_image')) {
             Storage::disk('public')->delete('post_images/' . $post->post_image);
@@ -113,6 +116,7 @@ class PostController extends Controller
 
     public function deletePost(PostModel $post)
     {
+        Gate::authorize('editPost', $post);
         Storage::disk('public')->delete('post_images/' . $post->post_image);
         TagModel::where('post_id', $post->id)->delete();
         $post->delete();
@@ -130,24 +134,6 @@ class PostController extends Controller
                 'post_id' => $post->id
             ]);
         }
-        return redirect()->back();
-    }
-
-    public function createComment(createCommentRequest $request, PostModel $post)
-    {
-        $data = $request->validated();
-
-        CommentModel::create([
-            'post_id' => $post->id,
-            'user_id' => auth()->id(),
-            'comment' => $data['comment']
-        ]);
-        return redirect()->back();
-    }
-
-    public function deleteComment(request $request, CommentModel $comment)
-    {
-        $comment->delete();
         return redirect()->back();
     }
 }

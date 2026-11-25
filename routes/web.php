@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -21,11 +22,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/getSearchData', [PostController::class, 'getSearchData'])->name('getSearchData');
     Route::post('/toggleLike{post}', [PostController::class, 'toggleLike'])->name('toggleLike');
-
-    Route::post('/postComment{post}', [PostController::class, 'createComment'])->name('createComment');
-    Route::delete('deleteComment/{comment}', [PostController::class, 'deleteComment'])->name('deleteComment');
 });
 
+Route::middleware('auth')->group(function () {
+    Route::post('/postComment{post}', [CommentController::class, 'createComment'])->name('createComment');
+    Route::delete('deleteComment/{comment}', [CommentController::class, 'deleteComment'])->name('deleteComment');
+});
 
 Route::middleware(AdminCheckMiddleware::class)->group(function () {
     Route::get('/categoryView', [CategoryController::class, 'getAllCategory'])->name('categoryView');
@@ -42,7 +44,6 @@ Route::middleware(AdminCheckMiddleware::class)->group(function () {
     Route::put('/editUser/{user}', [UserController::class, 'editUser'])->name('editUser');
     Route::delete('deleteUser/{user}', [UserController::class, 'deleteUser'])->name('deleteUser');
 });
-
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
