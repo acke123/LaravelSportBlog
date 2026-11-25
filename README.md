@@ -1,59 +1,230 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SportBlog
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+SportBlog is a sports blogging platform built with **Laravel 12**. Users share posts about their favorite sports, add tags, search, like and comment on posts. Access is controlled by three roles: **Admin**, **Editor** and **Normal user**.
 
-## About Laravel
+The project was made as a certificate project and shows practical use of Laravel features: authentication, roles, middleware, policies, the repository pattern, observers, Redis caching, form request validation, Eloquent relationships and scopes, traits and image processing.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Account
+- Register, log in and log out (Laravel Breeze)
+- Reset a forgotten password
+- Edit your name, email and password
+- Delete your own account
 
-## Learning Laravel
+### Posts
+- Create a post with a title, description, image and category (sport)
+- Uploaded images are automatically converted to **WebP**
+- Edit or delete posts (depending on your role)
+- The old image file is removed from storage when it is replaced or the post is deleted
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Tags and search
+- Add comma-separated tags to a post (duplicates and spaces are removed)
+- Search posts by **category**, **title** or **tag**, or combine the filters
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Likes and comments
+- Like or unlike a post with one click
+- Like and comment counts are shown on every post
+- Posts you already liked are highlighted
+- Comment on posts (max 1000 characters) and delete comments (depending on your role)
 
-## Laravel Sponsors
+### Administration (Admin only)
+- Manage categories: create, edit and delete
+- Manage users: view all users, change name and role, delete users
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## User roles and permissions
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+| Action                                   | Normal   | Editor   | Admin    |
+|------------------------------------------|:--------:|:--------:|:--------:|
+| View posts and search                    | ✅       | ✅       | ✅       |
+| Create posts                             | ✅       | ✅       | ✅       |
+| Like / unlike posts                      | ✅       | ✅       | ✅       |
+| Write comments                           | ✅       | ✅       | ✅       |
+| Edit / delete posts                      | own only | ✅ all   | ✅ all   |
+| Delete comments                          | own only | ✅ all   | ✅ all   |
+| Edit profile / delete account            | own only | own only | own only |
+| Manage categories                        | ❌       | ❌       | ✅       |
+| View users, change roles, delete users   | ❌       | ❌       | ✅       |
 
-## Contributing
+New users get the **Normal** role by default. The first Admin account is created by the `FirstUser` seeder, and the Admin can change anyone's role later.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## Tech stack
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **PHP 8.2+**, **Laravel 12**
+- **MySQL** database
+- **Redis** cache (via `predis/predis`)
+- **Laravel Breeze** authentication
+- **Intervention Image 3** (GD driver) for image processing
+- **Bootstrap 5** and Bootstrap Icons for the main UI, Tailwind (Breeze) for the auth and profile pages
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Architecture
 
-## License
+### Middleware
+- `auth` protects every page in the app.
+- `AdminCheckMiddleware` (custom) protects all category and user management routes.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Policies
+Controllers check permissions with `Gate::authorize()`:
+
+| Policy                 | Method           | Rule                                                        |
+|------------------------|------------------|-------------------------------------------------------------|
+| `PostModelPolicy`      | `editPost`       | User is not Normal, **or** is the author of the post        |
+| `CommentModelPolicy`   | `updateComment`  | User is not Normal, **or** wrote the comment                |
+| `CategoryModelPolicy`  | `updateCategory` | User is Admin                                               |
+| `UserPolicy`           | `updateUser`     | User is Admin                                               |
+
+### Repository pattern
+Database logic is kept out of the controllers:
+- `App\Repository\PostRepository`: search query (category, title and tag, with a join on `tags`), saving and updating tags, deleting a post with its tags, toggling likes
+- `App\Repository\CommentRepository`: creating comments
+
+### Redis cache
+Frequently read data is cached with `Cache::remember()` for 10 minutes:
+
+| Cache key    | Content                                   |
+|--------------|-------------------------------------------|
+| `posts`      | All posts with like and comment counts    |
+| `categories` | List of categories (sports)               |
+| `users`      | List of users in the admin panel          |
+
+### Observers
+Observers are registered in `AppServiceProvider` and delete the related cache key on `created`, `updated` and `deleted` events:
+
+| Observer           | Model           | Clears key   |
+|--------------------|-----------------|--------------|
+| `PostObserver`     | `PostModel`     | `posts`      |
+| `LikeObserver`     | `LikeModel`     | `posts`      |
+| `CategoryObserver` | `CategoryModel` | `categories` |
+| `UserObserver`     | `User`          | `users`      |
+
+### Validation (Form Requests)
+- `SavePostRequest`: title (max 50), description (max 1000), existing category, required image (jpeg, png, jpg or gif, max 5 MB)
+- `EditPostRequest`: the same rules, but the image is optional
+- `CreateCommentRequest`: comment is required, max 1000 characters
+- `ProfileUpdateRequest`: name and a unique email
+
+### Eloquent
+- **Relationships:** `PostModel` has many tags, likes and comments; `LikeModel` and `CommentModel` belong to a user
+- **Local scopes:** `PostModel::GetAllPosts()` loads posts with `withCount('likes')` and `withCount('comments')`. `LikeModel::GetLikedPosts()` returns the likes of the logged-in user.
+- **Constants:** roles are defined as `User::ADMIN`, `User::EDITOR` and `User::NORMAL`
+
+### Trait
+`ImageUploadTrait` converts uploaded images to WebP (quality 90), gives each file a unique name and stores it on the `public` disk.
+
+---
+
+## Database
+
+| Table        | Description                                 |
+|--------------|---------------------------------------------|
+| `users`      | Users, including the `role` column (admin / editor / normal) |
+| `categories` | Sports (categories)                         |
+| `posts`      | Posts (title, description, image, category, author) |
+| `tags`       | Post tags                                   |
+| `likes`      | Likes (user and post)                       |
+| `comments`   | Comments (user, post and text)              |
+
+---
+
+## Installation
+
+### Requirements
+- PHP 8.2+ with the GD extension
+- Composer
+- Node.js and npm
+- MySQL
+- Redis server
+
+### Steps
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/acke123/LaravelSportBlog.git
+cd LaravelSportBlog
+
+# 2. Install dependencies
+composer install
+npm install
+
+# 3. Create the environment file and app key
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Set the database and Redis values in `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=sportblog
+DB_USERNAME=root
+DB_PASSWORD=
+
+CACHE_STORE=redis
+REDIS_CLIENT=predis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+```bash
+# 5. Run the migrations
+php artisan migrate
+
+# 6. Create the Admin account (and optional test users)
+php artisan db:seed --class=FirstUser
+php artisan db:seed --class=UserSeeder
+
+# 7. Link the storage folder so uploaded images are public
+php artisan storage:link
+
+# 8. Build the front-end assets
+npm run build
+
+# 9. Start the app
+php artisan serve
+```
+
+Open http://127.0.0.1:8000 in your browser.
+
+### Default Admin account
+
+| Email             | Password          |
+|-------------------|-------------------|
+| `admin@admin.com` | `admin@admin.com` |
+
+> Change this password after the first login.
+
+---
+
+## Project structure (main parts)
+
+```
+app/
+├── Http/
+│   ├── Controllers/      PostController, CommentController, CategoryController, UserController, ProfileController
+│   ├── Middleware/       AdminCheckMiddleware
+│   └── Requests/         SavePostRequest, EditPostRequest, CreateCommentRequest, ProfileUpdateRequest
+├── Models/               User, PostModel, CategoryModel, TagModel, LikeModel, CommentModel
+├── Observers/            PostObserver, LikeObserver, CategoryObserver, UserObserver
+├── Policies/             PostModelPolicy, CommentModelPolicy, CategoryModelPolicy, UserPolicy
+├── Repository/           PostRepository, CommentRepository
+├── Traits/               ImageUploadTrait
+└── Providers/            AppServiceProvider (observer registration)
+resources/views/
+├── posts/                create, edit, display post
+├── category/             category management (Admin)
+├── users/                user management (Admin)
+├── viewParts/            navbar, footer
+├── welcome.blade.php     home page with posts and search
+└── aboutUs.blade.php     About page
+```
